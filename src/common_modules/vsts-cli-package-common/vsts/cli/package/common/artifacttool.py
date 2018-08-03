@@ -21,13 +21,13 @@ class ArtifactToolInvoker:
     PATVAR = "VSTS_ARTIFACTTOOL_PATVAR"
 
     def download_universal(self, team_instance, feed, package_name, package_version, path):
-        self.run_artifacttool(team_instance, ["universal", "download", "--service", team_instance, "--patvar", self.PATVAR, "--feed", feed, "--package-name", package_name, "--package-version", package_version, "--path", path], "Downloading")
+        return self.run_artifacttool(team_instance, ["universal", "download", "--service", team_instance, "--patvar", self.PATVAR, "--feed", feed, "--package-name", package_name, "--package-version", package_version, "--path", path], "Downloading")
 
     def publish_universal(self, team_instance, feed, package_name, package_version, description, path):
         args = ["universal", "publish", "--service", team_instance, "--patvar", self.PATVAR, "--feed", feed, "--package-name", package_name, "--package-version", package_version, "--path", path]
         if description:
             args.extend(["--description", description])
-        self.run_artifacttool(team_instance, args, "Publishing")
+        return self.run_artifacttool(team_instance, args, "Publishing")
 
     def run_artifacttool(self, team_instance, args, initial_progress_message):
         # Download ArtifactTool if necessary, and return the path
@@ -43,7 +43,9 @@ class ArtifactToolInvoker:
         command_args = [artifacttool_binary_path] + args
         proc = self._tool_invoker.run(command_args, new_env, initial_progress_message, self._process_stderr)
         if proc:
-            print(proc.stdout.read().decode('utf-8'))
+            output = proc.stdout.read().decode('utf-8')
+            json_output = json.loads(output)
+            return json_output
 
     def _process_stderr(self, line, update_progress_callback):
         try:
