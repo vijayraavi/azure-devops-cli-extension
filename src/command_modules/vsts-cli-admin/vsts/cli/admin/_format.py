@@ -32,3 +32,31 @@ def _transform_banner_row(key, value):
     else:
         table_row['Expiration Date'] = ' '
     return table_row
+
+
+def transform_users_table_output(result):
+    table_output = []
+    for item in result:
+        table_output.append(_transform_users_row(item))
+    return table_output
+
+
+def transform_user_table_output(result):
+    table_output = [_transform_users_row(result)]
+    return table_output
+
+
+def _transform_users_row(row):
+    table_row = OrderedDict()
+    table_row['ID'] = row['id']
+    if 'user' in row:
+        table_row['Display Name'] = row['user']['displayName']
+    else:
+        table_row['Display Name'] = ' '
+    if 'accessLevel' in row:
+        table_row['License'] = row['accessLevel']['licenseDisplayName']
+        table_row['Status'] = row['accessLevel']['status']
+    else:
+        table_row['License'] = ' '
+        table_row['Status'] = ' '
+    return table_row

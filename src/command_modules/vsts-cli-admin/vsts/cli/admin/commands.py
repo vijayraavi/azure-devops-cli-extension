@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.commands import CommandGroup
-from ._format import transform_banner_table_output
+from ._format import transform_users_table_output, transform_user_table_output, transform_banner_table_output
 
 
 def load_admin_commands(cli_command_loader):
@@ -14,4 +14,8 @@ def load_admin_commands(cli_command_loader):
         g.command('banner add', 'banner_add', table_transformer=transform_banner_table_output)
         g.command('banner remove', 'banner_remove')
         g.command('banner update', 'banner_update', table_transformer=transform_banner_table_output)
-
+    with CommandGroup(cli_command_loader, 'admin', 'vsts.cli.admin.common.user#{}') as g:
+        g.command('user list', 'user_entitlement_list', table_transformer=transform_users_table_output)
+        g.command('user show', 'user_entitlement_show', table_transformer=transform_user_table_output)
+        g.command('user add', 'add_user', table_transformer=transform_user_table_output)
+        g.command('user remove', 'remove_user')

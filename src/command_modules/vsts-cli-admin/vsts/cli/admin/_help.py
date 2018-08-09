@@ -12,3 +12,10 @@ helps['admin'] = """
     short-summary: Administration commands.
     long-summary:
 """
+
+helps['admin user'] = """
+    type: group
+    short-summary: Manage users for your organization.
+    long-summary:
+"""
+
