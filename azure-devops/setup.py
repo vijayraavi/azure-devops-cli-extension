@@ -18,6 +18,7 @@ NAME = 'azure-devops'
 # http://pypi.python.org/pypi/setuptools
 
 REQUIRES = [
+    'distro==1.3.0',
     'python-dateutil==2.7.3',
     'vsts==0.1.20',
     'keyring~=13.2.1'

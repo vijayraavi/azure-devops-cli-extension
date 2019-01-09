@@ -12,6 +12,7 @@ import sys
 import uuid
 import zipfile
 
+import distro
 import humanfriendly
 import requests
 
@@ -56,6 +57,7 @@ class ArtifactToolUpdater:
             try:
                 release = _get_current_release(devops_organization, override_version)
             except Exception as ex:
+                logger.debug(ex, exc_info=True)
                 raise CLIError('Failed to update Universal Packages tooling.\n {}'.format(ex))
             release_uri, release_id = release
 
@@ -135,8 +137,10 @@ def _get_current_release(devops_organization, override_version):
     connection = get_vss_connection(devops_organization)
     client = connection.get_client('azext_devops.dev.artifacts.client_tool.client_tool_client.ClientToolClient')
     logger.debug("Looking up current version of ArtifactTool...")
-    release = client.get_clienttool_release("ArtifactTool", os_name=platform.system(), arch=platform.machine(),
-                                            version=override_version)
+    # Distro returns empty strings on Windows currently, so don't even send
+    distro_name = distro.id() or None
+    distro_version = distro.version() or None
+    release = client.get_clienttool_release("ArtifactTool", os_name=platform.system(), arch=platform.machine(), distro_name=distro_name, distro_version=distro_version, version=override_version)
     return (release.uri, _compute_id(release)) if release is not None else None
 
 
